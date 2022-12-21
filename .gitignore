@@ -1,0 +1,5 @@
+.env
+.venv/
+__pycache__/
+.vscode/
+db/local_museum_db
