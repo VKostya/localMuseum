@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from pony.orm import db_session, commit
+from pony.orm import db_session, commit, select
 from db.base import Museums
 from schemas.museums import MuseumBase
 
@@ -29,6 +29,12 @@ def update_sql_data(id, data: MuseumBase):
 def delete_with_id(id):
     Museums[id].delete()
     commit()
+
+
+@db_session
+def search_museum(query: str):
+    museums = select(m for m in Museums if m.title.contains(query))
+    return museums
 
 
 def validate_id(id):

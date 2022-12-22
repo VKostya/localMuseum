@@ -1,3 +1,4 @@
+from fastapi import HTTPException, status
 from pony.orm import db_session
 from db.base import Users
 from utils.security import Hasher
@@ -14,4 +15,9 @@ def select_user_email(email):
 
 
 def user_is_admin(user: Users):
-    return user.role_id == 3
+    if not user.role_id == 3:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )

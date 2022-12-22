@@ -1,0 +1,37 @@
+{% extends "shared/base.html" %}
+
+
+{% block title %}
+<title>Список музеев</title>
+{% endblock %}
+
+{% block content %}
+{% if msg %}
+<div class="badge bg-success text-wrap font-weight-bold" style="font-size: large;">
+    {{msg}}
+</div>
+{% endif %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="display-5">Найти музей</h1>
+        </div>
+    </div>
+    <div class="row">
+        {% for m in museums %}
+        <div class="col-lg-4 col-md-3 col-sm-10 mr-auto">
+            {% with obj=m %}
+            {% include "components/cards.html" %}
+            {% endwith %}
+
+            {% if loop.index %3 %}
+        </div>
+        {% else %}
+    </div>
+</div><br>
+<div class="row">
+    {% endif %}
+    {% endfor %}
+</div>
+</div>
+{% endblock %}

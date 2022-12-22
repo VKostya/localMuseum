@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 from schemas.users import UserCreate
 from db.scripts.users import create_new_user, select_user_email
@@ -10,6 +10,7 @@ from utils.auth import OAuth2PasswordBearerWithCookie
 from utils.security import Hasher, create_access_token
 from schemas.token import Token
 from config import config
+from fastapi.responses import RedirectResponse
 
 router = APIRouter()
 
@@ -49,11 +50,18 @@ def login_for_access_token(
 oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl="/api/auth/login")
 
 
+@router.get("/logout")
+async def logout(request: Request, response: Response):
+    response.delete_cookie("access_token")
+    return
+
+
 def get_current_user_from_token(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Неудается авторизировать",
     )
+    print(jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM]))
     try:
         payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
         username: str = payload.get("sub")
@@ -65,6 +73,19 @@ def get_current_user_from_token(token: str = Depends(oauth2_scheme)):
     if user is None:
         raise credentials_exception
     return user
+
+
+def get_current_role(token: str):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Неудается авторизировать",
+    )
+    try:
+        payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
+    except JWTError:
+        raise credentials_exception
+    user_role = payload.get("role")
+    return user_role
 
 
 """

@@ -1,0 +1,8 @@
+<div class="card shadow p-3 mb-2 bg-body rounded" style="width: 18rem;">
+    <div class="card-body">
+        <h5 class="card-title">{{obj.title}}</h5>
+        <p class="card-text">Связаться с музеем : <a href="{{obj.contact_url}}">{{obj.contact_url}}</a></p>
+        <p class="card-text">Описание : {{obj.description[:80]}}...</p>
+        <a href="/museum/{{obj.id}}" class="btn btn-primary">Read more</a>
+    </div>
+</div>

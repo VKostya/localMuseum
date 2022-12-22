@@ -36,12 +36,8 @@ async def create_museum(
     file: UploadFile = File(...),
     current_user: Users = Depends(get_current_user_from_token),
 ):
-    if not user_is_admin(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    user_is_admin(current_user)
+
     try:
         file_store = await file.read()
         result = cloudinary.uploader.upload(file_store, public_id=title, overwite=True)
@@ -68,12 +64,7 @@ async def update_image(
     file: UploadFile = File(...),
     current_user: Users = Depends(get_current_user_from_token),
 ):
-    if not user_is_admin(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    user_is_admin(current_user)
     validate_id(id)
     museum = select_with_id(id)
     try:
@@ -95,12 +86,7 @@ async def update_info(
     data: MuseumBase = Body(...),
     current_user: Users = Depends(get_current_user_from_token),
 ):
-    if not user_is_admin(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    user_is_admin(current_user)
     validate_id(id)
     update_sql_data(id, data)
     return {"result": "ok"}
@@ -110,12 +96,7 @@ async def update_info(
 async def delete_museum(
     id: int, current_user: Users = Depends(get_current_user_from_token)
 ):
-    if not user_is_admin(current_user):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    user_is_admin(current_user)
     validate_id(id)
     delete_with_id(id)
     return {"result": "ok"}

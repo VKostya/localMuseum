@@ -1,8 +1,9 @@
+from typing import Optional
 from fastapi import APIRouter, HTTPException
 from schemas.museums import MuseumRead
 from pony.orm import db_session
 from db.base import Museums
-from db.scripts.museums import select_with_id, validate_id
+from db.scripts.museums import search_museum, select_with_id, validate_id
 
 router = APIRouter()
 
