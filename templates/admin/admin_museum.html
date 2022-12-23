@@ -1,0 +1,57 @@
+{% extends "shared/base.html" %}
+
+
+{% block title %}
+<title>Museum Admin</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="display-5">Управление музеями</h1>
+        </div>
+    </div>
+    <br>
+    <form class="d-flex" action="/admin/museum/addMuseum">
+        <button class="btn btn-success" type="submit">Добавить музей</button>
+    </form>
+    <br>
+    <div class="row">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">ID музея</th>
+                    <th scope="col">Название</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in museum %}
+                <tr>
+                    <th scope="row">{{loop.index}}</th>
+                    <td>{{m.id}}</td>
+                    <td>{{m.title}}</td>
+                    <td>
+                        <form class="d-flex" action="/admin/museums/changePicture/{{m.id}}">
+                            <button class="btn btn-warning" type="submit">Изменить фотографию</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form class="d-flex" action="/admin/museums/changeInfo/{{m.id}}">
+                            <button class="btn btn-warning" type="submit">Изменить информацию</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form class="d-flex" action="/admin/museums/deleteMuseum/{{m.id}}">
+                            <button class="btn btn-danger" type="submit">Удалить музей</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

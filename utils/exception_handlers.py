@@ -14,3 +14,7 @@ async def not_authenticated_error(request: Request, exc: HTTPException):
 
 async def cloudinary_error(request: Request, exc: HTTPException):
     return templates.TemplateResponse("HTTP_errors/501.html", {"request": request})
+
+
+async def unprocessable_error(request: Request, exc: HTTPException):
+    return templates.TemplateResponse("HTTP_errors/422.html", {"request": request})

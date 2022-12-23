@@ -1,0 +1,60 @@
+{% extends "shared/base.html" %}
+
+
+{% block title %}
+<title>Create a Job Post</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="text-danger font-weight-bold">
+            {% for error in errors %}
+            <li>{{error}}</li>
+            {% endfor %}
+        </div>
+    </div>
+    {% if msg %}
+    <br>
+    <br>
+    <div class="badge bg-success text-wrap font-weight-bold" style="font-size: large;">
+        {{msg}}
+    </div>
+    {% endif %}
+    <div class="row my-5">
+        <h3 class="text-center display-4">Изменить информацию для объекта - {{mus.title}}</h3>
+        <form method="POST" enctype='multipart/form-data'>
+            <div class="mb-3">
+                <input type="text" required class="form-control" name="title" value="{{mus.title}}"
+                    placeholder="Название музея">
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Описнаие музея</label>
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="description"
+                    value="{{mus.description}}">{{mus.description}}</textarea>
+            </div>
+            <div class="mb-3">
+                <input type="text" required placeholder="Сайт музея" name="contact_url" value="{{mus.contact_url}}"
+                    class="form-control">
+            </div>
+            <div class="mb-3">
+                <input type="text" required placeholder="Адрес" name="address" value="{{mus.address}}"
+                    class="form-control">
+            </div>
+            <div class="mb-3">
+                <input type="text" required placeholder="Цена билета" name="ticket_price" value="{{mus.ticket_price}}"
+                    class="form-control">
+            </div>
+            <div class="mb-3">
+                <input type="text" required placeholder="Расписание" name="schedule" value="{{mus.schedule}}"
+                    class="form-control">
+            </div>
+            <div class="mb-3">
+                <input type="text" required placeholder="ID менеджера" name="manager_id" value="{{mus.manager_id}}"
+                    class="form-control">
+            </div>
+            <button type="submit" class="btn btn-primary">Изменить</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

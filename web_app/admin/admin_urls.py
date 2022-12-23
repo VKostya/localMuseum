@@ -1,0 +1,126 @@
+from fastapi import (
+    APIRouter,
+    File,
+    HTTPException,
+    Request,
+    UploadFile,
+    status,
+)
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import RedirectResponse
+from db.base import Museums
+from db.scripts.museums import delete_with_id, select_with_id, upgate_image_url
+from schemas.museums import MuseumRead
+from pony.orm import db_session
+from utils.cloudinary_utils import load_to_cloudinary
+from web_api.admin.router_admin import create_museum
+from web_api.auth.router_auth import get_current_role
+from web_app.admin.admin_form import MuseumCreateForm
+
+templates = Jinja2Templates(directory="templates")
+router = APIRouter(include_in_schema=False)
+
+
+def validate_admin(request):
+    user_role = 0
+    token = request.cookies.get("access_token")
+    if token:
+        user_role = get_current_role(token.split()[1])
+    if user_role != 3:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+
+@router.get("/museums")
+def list_museums(request: Request):
+    validate_admin(request)
+    with db_session:
+        museums = Museums.select()
+        result = [MuseumRead.from_orm(m) for m in museums]
+
+    return templates.TemplateResponse(
+        "admin/admin_museum.html", {"request": request, "museum": result, "user": 3}
+    )
+
+
+@router.get("/museums/deleteMuseum/{id}")
+def list_museums(request: Request, id: int):
+    validate_admin(request)
+    delete_with_id(id)
+    response = RedirectResponse(url="/admin/museums", status_code=status.HTTP_302_FOUND)
+    return response
+
+
+@router.get("/museum/addMuseum")
+def add_museum(request: Request):
+    validate_admin(request)
+    return templates.TemplateResponse(
+        "admin/add_form.html", {"request": request, "user": 3}
+    )
+
+
+@router.post("/museum/addMuseum")
+async def add_museum(request: Request, file: UploadFile = File(...)):
+    validate_admin(request)
+    form = MuseumCreateForm(request)
+    await form.load_data()
+    if form.is_valid():
+        try:
+            form.__dict__.update(msg="Добавлено")
+            response = templates.TemplateResponse("admin/add_form.html", form.__dict__)
+            url = await load_to_cloudinary(form.title, file)
+            with db_session:
+                Museums(
+                    title=form.title,
+                    image_url=url,
+                    description=form.description,
+                    address=form.address,
+                    contact_url=form.contact_url,
+                    ticket_price=form.ticket_price,
+                    schedule=form.schedule,
+                    manager_id=form.manager_id,
+                )
+            return response
+        except Exception as e:
+            print(e)
+            form.__dict__.get("errors").append(
+                "You might not be logged in, In case problem persists please contact us."
+            )
+            return templates.TemplateResponse("jobs/create_job.html", form.__dict__)
+    return templates.TemplateResponse("jobs/create_job.html", form.__dict__)
+
+
+@router.get("/museums/changePicture/{id}")
+async def reset_image(id: int, request: Request):
+    validate_admin(request)
+    museum = select_with_id(id)
+    return templates.TemplateResponse(
+        "admin/image_form.html", {"request": request, "user": 3, "mus": museum}
+    )
+
+
+@router.post("/museums/changePicture/{id}")
+async def reset_image(id: int, request: Request, file: UploadFile = File(...)):
+    validate_admin(request)
+    museum = select_with_id(id)
+    try:
+        url = await load_to_cloudinary(museum.title, file)
+    except:
+        raise HTTPException(status_code=501, detail="Unable to load image")
+    upgate_image_url(id, url)
+    return templates.TemplateResponse(
+        "admin/image_form.html",
+        {"request": request, "user": 3, "msg": "Добавлено", "mus": museum},
+    )
+
+
+@router.get("/museums/changeInfo/{id}")
+async def change_info(id: int, request: Request):
+    validate_admin(request)
+    museum = select_with_id(id)
+    return templates.TemplateResponse(
+        "admin/info_form.html", {"request": request, "user": 3, "mus": museum}
+    )

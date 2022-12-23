@@ -13,6 +13,7 @@ from db.scripts.museums import (
 )
 from db.scripts.users import user_is_admin
 from schemas.museums import MuseumBase
+from utils.cloudinary_utils import load_to_cloudinary
 from web_api.auth.router_auth import get_current_user_from_token
 
 cloudinary.config(
@@ -39,9 +40,7 @@ async def create_museum(
     user_is_admin(current_user)
 
     try:
-        file_store = await file.read()
-        result = cloudinary.uploader.upload(file_store, public_id=title, overwite=True)
-        url = result.get("url")
+        url = await load_to_cloudinary(title, file)
     except:
         raise HTTPException(status_code=501, detail="Unable to load image")
     with db_session:
@@ -68,11 +67,7 @@ async def update_image(
     validate_id(id)
     museum = select_with_id(id)
     try:
-        file_store = await file.read()
-        result = cloudinary.uploader.upload(
-            file_store, public_id=museum.title, overwite=True
-        )
-        url = result.get("url")
+        url = load_to_cloudinary(museum.title, file)
     except:
         raise HTTPException(status_code=501, detail="Unable to load image")
 

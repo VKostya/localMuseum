@@ -8,11 +8,13 @@ from utils.exception_handlers import (
     not_found_error,
     not_authenticated_error,
     cloudinary_error,
+    unprocessable_error,
 )
 
 exception_handlers = {
     404: not_found_error,
     401: not_authenticated_error,
+    422: unprocessable_error,
     501: cloudinary_error,
 }
 app = FastAPI(exception_handlers=exception_handlers)
