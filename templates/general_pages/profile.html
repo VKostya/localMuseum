@@ -1,0 +1,53 @@
+{% extends "shared/base.html" %}
+
+
+{% block title %}
+<title>Профиль</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="display-5">Настройки профиля</h1>
+        </div>
+    </div>
+    <div class="row">
+
+        <div class="col-lg-3 col-md-4 col-sm-10 mr-auto">
+            <form method="get" action="/profile/change_password">
+                <input class="submit" type="submit" value="Сменить пароль">
+            </form>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-10 mr-auto">
+            <form method="get" action="/profile/change_email">
+                <input class="submit" type="submit" value="Сменить почту">
+            </form>
+        </div>
+        <div class="col-lg-3 col-md-4 col-sm-10 mr-auto">
+            {% if send_notif == 1 %}
+            <form method="post" action="/profile/notify_off">
+                <input class="submit" type="submit" value="Выключить уведомления">
+            </form>
+            {% else %}
+            <form method="post" action="/profile/notify_on">
+                <input class="submit" type="submit" value="Включить уведомления">
+            </form>
+            {% endif %}
+        </div>
+        {% if is_verified == 0 %}
+        <div class="col-lg-3 col-md-4 col-sm-10 mr-auto">
+            <form method="post" action="/profile/verify">
+                <input class="submit" type="submit" value="Подтвердить почту">
+            </form>
+        </div>
+        {% endif %}
+        <div class="col-lg-5 col-md-3 col-sm-10 mr-auto">
+
+        </div>
+    </div>
+</div><br>
+<div class="row">
+</div>
+</div>
+{% endblock %}

@@ -3,31 +3,42 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/docs/">Docs</a>
+                    <a class="nav-link active" aria-current="page" href="/">Домой</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/redoc/">Redoc</a>
                 </li>
                 {% if user_role == 3 %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/admin/museums">Admin museum</a>
+                    <a class="nav-link" href="/admin/museums">Управлять музеями</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/admin/users">Управлять ролями пользователей</a>
+                </li>
+                {% endif %}
+                {% if user_role == 2 %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/moderate/museums">Опубилковать сообщение</a>
                 </li>
                 {% endif %}
             </ul>
             <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
-                {% if user_role in [0, 1, 2, 3]%}
                 {% if user_role != 0 %}
+                {% if user_role in [1, 2, 3] %}
+                <li class="nav-item">
+                    <a class="nav-link" href="/favorite">Подписки</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/profile">Профиль</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/logout">Выйти</a>
                 </li>
+                {% endif %}
                 {% else %}
                 <form class="d-flex" action="/login">
                     <button class="btn btn-outline-success" type="submit">Войти</button>
                 </form>
-                {% endif %}
                 {% endif %}
         </div>
 

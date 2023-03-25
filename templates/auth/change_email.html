@@ -2,13 +2,13 @@
 
 
 {% block title %}
-<title>Login</title>
+<title>Change email</title>
 {% endblock %}
 
 {% block content %}
 <div class="container">
     <div class="row">
-        <h5 class="display-5">Login to Local Museum</h5>
+        <h5 class="display-5">Смена email</h5>
         <div class="text-danger font-weight-bold">
             {% for error in errors %}
             <li>{{error}}</li>
@@ -26,16 +26,13 @@
     <div class="row my-5">
         <form method="POST">
             <div class="mb-3">
-                <label>Email</label>
-                <input type="text" required placeholder="Ваш email" name="email" value="{{email}}" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label>Пароль</label>
-                <input type="password" required placeholder="Ваш пароль" name="password" class="form-control">
+                <label>Введите новый email. (После успешной смены будет выполнен принудительный выход из
+                    аккаунта)</label>
+                <input type="text" required placeholder="Новый email" name="email" value="{{email}}"
+                    class="form-control">
             </div>
             <button type="submit" class="btn btn-primary">Ввести</button>
         </form>
-        <p>Нету аккаунта? <a href="/register">Зарегистрируйстесь</a></p>
     </div>
 </div>
 {% endblock %}

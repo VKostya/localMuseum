@@ -75,19 +75,6 @@ def get_current_user_from_token(token: str = Depends(oauth2_scheme)):
     return user
 
 
-def get_current_role(token: str):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Неудается авторизировать",
-    )
-    try:
-        payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
-    except JWTError:
-        raise credentials_exception
-    user_role = payload.get("role")
-    return user_role
-
-
 """
 @router.post("/")
 def create_user(user: UserCreate):

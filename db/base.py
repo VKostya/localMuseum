@@ -27,6 +27,17 @@ class Users(db.Entity):
     send_notifications = Required(int, default=0)
 
 
+class Subscriptions(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    museum_id = Required(int)
+    user_id = Required(int)
+
+
+class Roles(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    role = Required(str)
+
+
 if config.DEBUG:
     sql_debug(True)
 db.generate_mapping(create_tables=True)

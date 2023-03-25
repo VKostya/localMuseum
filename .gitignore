@@ -3,3 +3,5 @@
 __pycache__/
 .vscode/
 db/local_museum_db
+proxmox.py
+static/pict

@@ -12,9 +12,8 @@ from db.base import Museums
 from db.scripts.museums import delete_with_id, select_with_id, upgate_image_url
 from schemas.museums import MuseumRead
 from pony.orm import db_session
+from utils.auth import get_role
 from utils.cloudinary_utils import load_to_cloudinary
-from web_api.admin.router_admin import create_museum
-from web_api.auth.router_auth import get_current_role
 from web_app.admin.admin_form import MuseumCreateForm
 
 templates = Jinja2Templates(directory="templates")
@@ -22,10 +21,7 @@ router = APIRouter(include_in_schema=False)
 
 
 def validate_admin(request):
-    user_role = 0
-    token = request.cookies.get("access_token")
-    if token:
-        user_role = get_current_role(token.split()[1])
+    user_role = get_role(request=request)
     if user_role != 3:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -85,12 +81,9 @@ async def add_museum(request: Request, file: UploadFile = File(...)):
                 )
             return response
         except Exception as e:
-            print(e)
-            form.__dict__.get("errors").append(
-                "You might not be logged in, In case problem persists please contact us."
-            )
-            return templates.TemplateResponse("jobs/create_job.html", form.__dict__)
-    return templates.TemplateResponse("jobs/create_job.html", form.__dict__)
+            form.__dict__.get("errors").append("Неверный формат данных")
+            return templates.TemplateResponse("admin/add_form.html", form.__dict__)
+    return templates.TemplateResponse("admin/add_form.html", form.__dict__)
 
 
 @router.get("/museums/changePicture/{id}")
