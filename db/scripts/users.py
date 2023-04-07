@@ -5,7 +5,7 @@ from utils.security import Hasher
 
 
 @db_session
-def create_new_user(email, password, role_id=1, is_valid=0, send_notifications=0):
+def create_new_user(email, password):
     Users(
         email=email,
         password=Hasher.get_password_hash(password),
@@ -25,6 +25,7 @@ def update_notifications(id, value):
 @db_session
 def update_email(id, value):
     Users[id].email = value
+    Users[id].is_valid = 0
 
 
 @db_session

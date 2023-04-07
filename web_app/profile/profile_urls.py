@@ -36,7 +36,6 @@ async def profile_page(request: Request):
 
 def change_notification_status(request: Request, value):
     user_role = validate_user_role_not_null(request)
-
     token = request.cookies.get("access_token")
     user = get_current_user_from_token(token.split()[1])
     update_notifications(user.id, value=value)
@@ -66,6 +65,18 @@ def change_password(request: Request):
     )
 
 
+@router.get("/change_email")
+def change_email(request: Request):
+    user_role = validate_user_role_not_null(request)
+    return templates.TemplateResponse(
+        "auth/change_email.html",
+        {
+            "request": request,
+            "user": user_role,
+        },
+    )
+
+
 @router.post("/change_password")
 async def change_password(request: Request):
     user_role = validate_user_role_not_null(request)
@@ -78,18 +89,6 @@ async def change_password(request: Request):
         response = RedirectResponse(url="/profile", status_code=status.HTTP_302_FOUND)
         return response
     return templates.TemplateResponse("auth/change_password.html", form.__dict__)
-
-
-@router.get("/change_email")
-def change_email(request: Request):
-    user_role = validate_user_role_not_null(request)
-    return templates.TemplateResponse(
-        "auth/change_email.html",
-        {
-            "request": request,
-            "user": user_role,
-        },
-    )
 
 
 @router.post("/change_email")

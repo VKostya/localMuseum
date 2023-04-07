@@ -53,7 +53,7 @@ def museum_detail(id: int, request: Request):
 
 
 @router.get("/favorite")
-def fav_museums(request: Request, msg: str = None):
+def fav_museums(request: Request):
     user_role = validate_user_role_not_null(request)
     token = request.cookies.get("access_token")
     user = get_current_user_from_token(token.split()[1])
@@ -69,7 +69,6 @@ def fav_museums(request: Request, msg: str = None):
         {
             "request": request,
             "museums": result,
-            "msg": msg,
             "user": user_role,
             "text": "Отслеживаемые музеи",
         },

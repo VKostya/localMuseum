@@ -9,7 +9,12 @@ from fastapi import (
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from db.base import Museums
-from db.scripts.museums import delete_with_id, select_with_id, upgate_image_url
+from db.scripts.museums import (
+    delete_with_id,
+    select_with_id,
+    update_sql_data,
+    upgate_image_url,
+)
 from schemas.museums import MuseumRead
 from pony.orm import db_session
 from utils.auth import get_role
@@ -117,3 +122,23 @@ async def change_info(id: int, request: Request):
     return templates.TemplateResponse(
         "admin/info_form.html", {"request": request, "user": 3, "mus": museum}
     )
+
+
+@router.post("/museums/changeInfo/{id}")
+async def change_info(id: int, request: Request):
+    validate_admin(request)
+    form = MuseumCreateForm(request)
+    await form.load_data()
+    if form.is_valid():
+        try:
+            update_sql_data(id=id, data=form)
+            form.__dict__.update(msg="Изменено")
+            response = RedirectResponse(
+                url="/admin/museums", status_code=status.HTTP_302_FOUND
+            )
+
+            return response
+        except Exception as e:
+            form.__dict__.get("errors").append("Неверный формат данных")
+            return templates.TemplateResponse("admin/info_form.html", form.__dict__)
+    return templates.TemplateResponse("admin/info_form.html", form.__dict__)

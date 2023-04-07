@@ -72,8 +72,6 @@ async def register(request: Request, response: Response):
             return templates.TemplateResponse("auth/register.html", form.__dict__)
 
         create_new_user(form.username, form.password)
-        msg = "Вы зарегистрировались :)"
-        form.__dict__.update(msg=msg)
         response = RedirectResponse(url="/login", status_code=status.HTTP_302_FOUND)
         return response
     return templates.TemplateResponse("auth/register.html", form.__dict__)
