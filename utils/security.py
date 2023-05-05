@@ -1,3 +1,5 @@
+import secrets
+import string
 from passlib.context import CryptContext
 from datetime import datetime
 from datetime import timedelta
@@ -29,3 +31,8 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, config.SECRET_KEY, algorithm=config.ALGORITHM)
     return encoded_jwt
+
+
+def get_unique_hash():
+    letters_and_digits = string.ascii_letters + string.digits
+    return "".join(secrets.choice(letters_and_digits) for _ in range(16))

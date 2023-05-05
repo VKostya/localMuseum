@@ -18,8 +18,18 @@ def select_user_email(email):
 
 
 @db_session
+def get_email(id):
+    return Users[id].email
+
+
+@db_session
 def update_notifications(id, value):
     Users[id].send_notifications = value
+
+
+@db_session
+def update_verif(id):
+    Users[id].is_valid = 1
 
 
 @db_session

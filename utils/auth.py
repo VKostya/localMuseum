@@ -43,7 +43,7 @@ class OAuth2PasswordBearerWithCookie(OAuth2):
 def get_current_role(token: str):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Неудается авторизировать",
+        detail="Не удается авторизировать",
     )
     try:
         payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])

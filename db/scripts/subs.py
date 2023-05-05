@@ -21,5 +21,5 @@ def add_sub(museum_id, user_id):
 @db_session
 def del_sub(museum_id, user_id):
     delete(
-        s for s in Subscriptions if (s.museum_id == museum_id and user_id == user_id)
+        s for s in Subscriptions if (s.museum_id == museum_id and s.user_id == user_id)
     )

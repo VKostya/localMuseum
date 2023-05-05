@@ -5,6 +5,7 @@ from config import config
 from web_api.base import api_router
 from web_app.base import app_router
 from utils.exception_handlers import (
+    forbidden_error,
     not_found_error,
     not_authenticated_error,
     cloudinary_error,
@@ -18,6 +19,7 @@ exception_handlers = {
     409: subscribe_error,
     422: unprocessable_error,
     501: cloudinary_error,
+    403: forbidden_error,
 }
 app = FastAPI(exception_handlers=exception_handlers)
 

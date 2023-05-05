@@ -22,3 +22,7 @@ async def unprocessable_error(request: Request, exc: HTTPException):
 
 async def subscribe_error(request: Request, exc: HTTPException):
     return templates.TemplateResponse("HTTP_errors/409.html", {"request": request})
+
+
+async def forbidden_error(request: Request, exc: HTTPException):
+    return templates.TemplateResponse("HTTP_errors/403.html", {"request": request})

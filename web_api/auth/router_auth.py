@@ -17,7 +17,6 @@ router = APIRouter()
 
 def authenticate_user(username: str, password: str):
     user = select_user_email(username)
-    print(user)
     if not user:
         return False
     if not Hasher.verify_password(password, user.password):

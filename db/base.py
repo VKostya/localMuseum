@@ -38,6 +38,12 @@ class Roles(db.Entity):
     role = Required(str)
 
 
+class Verifications(db.Entity):
+    user_id = Required(int)
+    hash_code = Required(str)
+
+
 if config.DEBUG:
     sql_debug(True)
+
 db.generate_mapping(create_tables=True)
