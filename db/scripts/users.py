@@ -33,6 +33,11 @@ def update_verif(id):
 
 
 @db_session
+def update_role(id, role_id):
+    Users[id].role_id = role_id
+
+
+@db_session
 def update_email(id, value):
     Users[id].email = value
     Users[id].is_valid = 0
@@ -50,3 +55,8 @@ def user_is_admin(user: Users):
             detail="Not authenticated",
             headers={"WWW-Authenticate": "Bearer"},
         )
+
+
+@db_session
+def select_user_with_id(id):
+    return Users.get(id=id)

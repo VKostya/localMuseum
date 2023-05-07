@@ -15,3 +15,11 @@ class UserCreate(UserBase):
         if not ("@" in char_list):
             return ValueError("not match")
         return v
+
+
+class UserRead(BaseModel):
+    id: int
+    email: str
+
+    class Config:
+        orm_mode = True

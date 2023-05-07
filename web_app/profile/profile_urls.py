@@ -12,7 +12,6 @@ from db.scripts.verifications import (
     check_ver_attempt,
     correct_hash,
     remove_verif_pair,
-    verif_pair,
 )
 from utils.auth import get_role, validate_user_role_not_null
 from utils.mail import send_ver_mail
@@ -144,11 +143,7 @@ async def verify_email(request: Request, background_tasks: BackgroundTasks):
 @router.get("/verify/{id}")
 async def verify_token(request: Request, id: str):
     if correct_hash(id):
-        token = request.cookies.get("access_token")
-        user = get_current_user_from_token(token.split()[1])
-        if verif_pair(user_id=user.id, hash_code=id):
-            update_verif(user.id)
-            remove_verif_pair(user.id)
-            response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
-            return response
+        remove_verif_pair(id)
+        response = RedirectResponse(url="/", status_code=status.HTTP_302_FOUND)
+        return response
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="FORBIDDEN")

@@ -8,18 +8,21 @@ from fastapi import (
 )
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
-from db.base import Museums
+from db.base import Museums, Users
 from db.scripts.museums import (
     delete_with_id,
     select_with_id,
     update_sql_data,
     upgate_image_url,
 )
+from db.scripts.users import select_user_with_id, update_role
 from schemas.museums import MuseumRead
 from pony.orm import db_session
+from schemas.users import UserRead
 from utils.auth import get_role
 from utils.cloudinary_utils import load_to_cloudinary
-from web_app.admin.admin_form import MuseumCreateForm
+from web_api.auth.router_auth import get_current_user_from_token
+from web_app.admin.admin_form import MuseumCreateForm, UserRoleForm
 
 templates = Jinja2Templates(directory="templates")
 router = APIRouter(include_in_schema=False)
@@ -142,3 +145,47 @@ async def change_info(id: int, request: Request):
             form.__dict__.get("errors").append("Неверный формат данных")
             return templates.TemplateResponse("admin/info_form.html", form.__dict__)
     return templates.TemplateResponse("admin/info_form.html", form.__dict__)
+
+
+@router.get("/users")
+async def list_users(request: Request):
+    validate_admin(request=request)
+    token = request.cookies.get("access_token")
+    user = get_current_user_from_token(token.split()[1])
+    with db_session:
+        users = Users.select(lambda u: u.id != user.id)
+        result = [UserRead.from_orm(u) for u in users]
+    return templates.TemplateResponse(
+        "admin/admin_users.html", {"request": request, "users": result, "user": 3}
+    )
+
+
+@router.get("/users/changeRole/{id}")
+async def reset_role(id: int, request: Request):
+    validate_admin(request)
+    user = select_user_with_id(id)
+    return templates.TemplateResponse(
+        "admin/change_role.html", {"request": request, "user": 3, "us": user}
+    )
+
+
+@router.post("/users/changeRole/{id}")
+async def change_role(id: int, request: Request):
+    validate_admin(request)
+    form = UserRoleForm(request=request)
+    user = select_user_with_id(id)
+    await form.load_data()
+    if form.is_valid():
+        try:
+            print(form.role)
+            update_role(id, form.role)
+            print(id)
+            form.__dict__.update(msg="Изменено")
+            response = RedirectResponse(
+                url="/admin/users", status_code=status.HTTP_302_FOUND
+            )
+            return response
+        except Exception as e:
+            form.__dict__.get("errors").append("Неверный формат данных")
+            return templates.TemplateResponse("admin/change_role.html", form.__dict__)
+    return templates.TemplateResponse("admin/change_role.html", form.__dict__)

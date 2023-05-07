@@ -1,0 +1,42 @@
+{% extends "shared/base.html" %}
+
+
+{% block title %}
+<title>User Admin</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="display-5">Управление ролями пользователей</h1>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">ID пользователя</th>
+                    <th scope="col">Почта</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <th scope="row">{{loop.index}}</th>
+                    <td>{{u.id}}</td>
+                    <td>{{u.email}}</td>
+                    <td>
+                        <form class="d-flex" action="/admin/users/changeRole/{{u.id}}">
+                            <button class="btn btn-warning" type="submit">Изменить роль</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
