@@ -43,6 +43,13 @@ class Verifications(db.Entity):
     hash_code = Required(str)
 
 
+class Posts(db.Entity):
+    id = PrimaryKey(int, auto=True)
+    message = Required(str)
+    time_published = Required(str)
+    museum_id = Required(int)
+
+
 if config.DEBUG:
     sql_debug(True)
 

@@ -1,0 +1,47 @@
+{% extends "shared/base.html" %}
+
+
+{% block title %}
+<title>Museum Moderator</title>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h1 class="display-5">Управление музеями</h1>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">ID музея</th>
+                    <th scope="col">Название</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in museums %}
+                <tr>
+                    <th scope="row">{{loop.index}}</th>
+                    <td>{{m.id}}</td>
+                    <td>{{m.title}}</td>
+                    <td>
+                        <form class="d-flex" action="/moderate/museums/addMessage/{{m.id}}">
+                            <button class="btn btn-success" type="submit">Добавить запись</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form class="d-flex" action="/moderate/museums/deleteMessage/{{m.id}}">
+                            <button class="btn btn-danger" type="submit">Удалить запись</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -60,7 +60,6 @@ def get_current_user_from_token(token: str = Depends(oauth2_scheme)):
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Неудается авторизировать",
     )
-    print(jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM]))
     try:
         payload = jwt.decode(token, config.SECRET_KEY, algorithms=[config.ALGORITHM])
         username: str = payload.get("sub")

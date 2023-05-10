@@ -4,7 +4,9 @@ from fastapi.templating import Jinja2Templates
 from pony.orm import db_session
 from db.base import Museums, Subscriptions
 from db.scripts.museums import select_with_id, validate_id
+from db.scripts.posts import select_museum_posts
 from db.scripts.subs import add_sub, del_sub, sub_exists
+from db.scripts.users import get_subs_email
 from schemas.museums import MuseumRead
 from utils.auth import get_role, validate_user_role_not_null
 from web_api.auth.router_auth import get_current_user_from_token
@@ -45,10 +47,19 @@ def museum_detail(id: int, request: Request):
         is_sub = sub_exists(museum_id=id, user_id=user.id)
     validate_id(id)
     mus = select_with_id(id=id)
-
+    posts = select_museum_posts(id=id)
+    posts = posts[::-1]
+    print(get_subs_email(museum_id=id))
     return templates.TemplateResponse(
         "museums/details.html",
-        {"request": request, "mus": mus, "user": user_role, "id": id, "is_sub": is_sub},
+        {
+            "request": request,
+            "mus": mus,
+            "user": user_role,
+            "id": id,
+            "is_sub": is_sub,
+            "posts": posts,
+        },
     )
 
 
@@ -64,6 +75,7 @@ def fav_museums(request: Request):
             museum = Museums.select(lambda s: s.id == m.museum_id)
             result.append([MuseumRead.from_orm(m) for m in museum])
         result = [m[0] for m in result]
+        print(result[0].title)
     return templates.TemplateResponse(
         "general_pages/homepage.html",
         {
