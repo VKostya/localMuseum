@@ -49,7 +49,6 @@ def museum_detail(id: int, request: Request):
     mus = select_with_id(id=id)
     posts = select_museum_posts(id=id)
     posts = posts[::-1]
-    print(get_subs_email(museum_id=id))
     return templates.TemplateResponse(
         "museums/details.html",
         {

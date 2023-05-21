@@ -50,3 +50,4 @@ class RegisterForm:
         if not self.errors:
             return True
         return False
+

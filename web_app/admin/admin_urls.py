@@ -132,6 +132,7 @@ async def change_info(id: int, request: Request):
     validate_admin(request)
     form = MuseumCreateForm(request)
     await form.load_data()
+
     if form.is_valid():
         try:
             update_sql_data(id=id, data=form)

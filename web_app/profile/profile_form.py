@@ -2,7 +2,6 @@ from typing import List
 from typing import Optional
 from fastapi import Request
 
-
 class EmailForm:
     def __init__(self, request: Request):
         self.request: Request = request
@@ -19,7 +18,6 @@ class EmailForm:
         if not self.errors:
             return True
         return False
-
 
 class ChangePassForm:
     def __init__(self, request: Request):

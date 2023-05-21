@@ -63,7 +63,6 @@ async def register(request: Request, response: Response):
     form = RegisterForm(request)
     await form.load_data()
     if await form.is_valid():
-
         # check if user with this email exists
         if select_user_email(form.username):
             form.__dict__.get("errors").append(

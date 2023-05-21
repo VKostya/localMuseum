@@ -38,6 +38,7 @@ def send_ver_mail(user_id, url, message):
 def send_notif_mail(museum_id, message):
     msg = set_msg_up()
     museum = select_with_id(id=museum_id).title
+    msg["Subject"] = "Notification message"
     header = f"""<pre> 
     Добрый день.
     {museum} опубликовал новое сообщение:
